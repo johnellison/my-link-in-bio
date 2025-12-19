@@ -192,7 +192,7 @@
             color: var(--primary-orange);
         }
 
-        /* --- GITHUB ACTIVITY SECTION --- */
+        /* --- ACTIVITY SECTION --- */
         .section-title {
             width: 100%;
             margin: 30px 0 15px 0;
@@ -217,25 +217,24 @@
             backdrop-filter: blur(10px);
             margin-bottom: 20px;
             animation: fadeInUp 0.8s ease-out 0.4s backwards;
+            min-height: 100px;
         }
 
-        /* Heatmap Pulse Container */
         .heatmap-container {
             width: 100%;
             overflow-x: auto;
             padding-bottom: 10px;
             margin-bottom: 15px;
             border-bottom: 1px solid rgba(255,255,255,0.05);
+            text-align: center;
         }
 
-        /* SVG fixes for the heatmap image */
         .heatmap-img {
             width: 100%;
             min-width: 300px;
-            filter: hue-rotate(0deg); /* Adjust if needed */
+            /* Invert slight hue to match theme if needed, or leave plain */
         }
 
-        /* Commits List */
         .commit-list {
             list-style: none;
             display: flex;
@@ -261,6 +260,8 @@
             margin-top: 3px;
             color: var(--accent-blue);
             font-size: 0.8rem;
+            width: 15px;
+            text-align: center;
         }
 
         .commit-content {
@@ -268,6 +269,7 @@
             flex-direction: column;
             gap: 2px;
             width: 100%;
+            overflow: hidden; /* Fixes text overflow issues */
         }
 
         .repo-name {
@@ -279,11 +281,10 @@
         .commit-msg {
             font-weight: 500;
             color: var(--text-main);
+            white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            display: -webkit-box;
-            -webkit-line-clamp: 1; /* Limit to 1 line */
-            -webkit-box-orient: vertical;
+            display: block;
         }
 
         .commit-time {
@@ -293,12 +294,13 @@
             margin-top: 2px;
         }
 
-        .loading-text {
+        .status-msg {
             color: var(--text-sub);
             font-size: 0.9rem;
             text-align: center;
-            padding: 10px;
+            padding: 15px;
             font-style: italic;
+            width: 100%;
         }
 
         /* --- FOOTER --- */
@@ -310,7 +312,6 @@
             animation: fadeIn 1s ease-out 0.6s backwards;
         }
 
-        /* --- ANIMATIONS --- */
         @keyframes fadeInDown {
             from { opacity: 0; transform: translateY(-20px); }
             to { opacity: 1; transform: translateY(0); }
@@ -340,8 +341,7 @@
         <!-- Profile Section -->
         <div class="profile-section">
             <div class="img-container">
-                <!-- Ensure this file exists or change to URL -->
-                <img src="refi-orbified-pfp.webp" alt="John Ellison" class="profile-img">
+                <img src="profile.jpg" alt="John Ellison" class="profile-img">
             </div>
             <h1 class="profile-name">John Ellison</h1>
             <p class="profile-bio">Founder, angel investor and startup consultant building with AI.</p>
@@ -392,16 +392,14 @@
         </div>
 
         <div class="activity-card">
-            <!-- Heatmap Pulse -->
+            <!-- Heatmap -->
             <div class="heatmap-container">
-                <!-- Using ghchart.rshah.org to generate graph in brand color (#ff6b35) -->
                 <img src="https://ghchart.rshah.org/ff6b35/johnellison" alt="Github Heatmap" class="heatmap-img">
             </div>
 
-            <!-- Commits List -->
-            <div id="loading" class="loading-text">Loading commits...</div>
+            <!-- Activity List -->
             <ul class="commit-list" id="commit-list">
-                <!-- JS will inject items here -->
+                <li id="status-msg" class="status-msg">Fetching latest data...</li>
             </ul>
         </div>
 
@@ -410,34 +408,29 @@
         </footer>
     </div>
 
-    <!-- JAVASCRIPT FOR GITHUB API -->
+    <!-- JAVASCRIPT -->
     <script>
         const username = 'johnellison';
         const apiUrl = `https://api.github.com/users/${username}/events/public`;
         const listElement = document.getElementById('commit-list');
-        const loadingElement = document.getElementById('loading');
+        const statusMsg = document.getElementById('status-msg');
 
-        // Helper: Time Ago calculation
+        // Helper: Time Ago
         function timeAgo(dateParam) {
             if (!dateParam) return null;
-            const date = typeof dateParam === 'object' ? dateParam : new Date(dateParam);
+            const date = new Date(dateParam);
             const today = new Date();
             const seconds = Math.round((today - date) / 1000);
             const minutes = Math.round(seconds / 60);
             const hours = Math.round(minutes / 60);
             const days = Math.round(hours / 24);
 
-            if (seconds < 5) return 'just now';
-            if (seconds < 60) return `${seconds} seconds ago`;
-            if (seconds < 90) return 'a minute ago';
-            if (minutes < 60) return `${minutes} minutes ago`;
-            if (minutes < 90) return 'an hour ago';
-            if (hours < 24) return `${hours} hours ago`;
-            if (hours < 48) return 'yesterday';
-            return `${days} days ago`;
+            if (seconds < 60) return 'Just now';
+            if (minutes < 60) return `${minutes}m ago`;
+            if (hours < 24) return `${hours}h ago`;
+            return `${days}d ago`;
         }
 
-        // Helper: Clean Repo Name
         function cleanRepoName(name) {
             return name.replace(`${username}/`, '');
         }
@@ -445,37 +438,67 @@
         async function fetchGitHubActivity() {
             try {
                 const response = await fetch(apiUrl);
+                
+                if (response.status === 403) {
+                    statusMsg.innerText = "API limit reached. Check back later.";
+                    return;
+                }
                 if (!response.ok) throw new Error('Failed to fetch');
                 
                 const events = await response.json();
                 
-                // Filter for PushEvents only
-                const pushEvents = events.filter(event => event.type === 'PushEvent');
+                // Filter specifically for PushEvents first
+                let relevantEvents = events.filter(e => e.type === 'PushEvent');
                 
-                // Take only the top 5
-                const recentCommits = pushEvents.slice(0, 5);
+                // If not enough pushes, fill with Create/Watch events to avoid empty space
+                if (relevantEvents.length < 5) {
+                    const otherEvents = events.filter(e => e.type === 'CreateEvent' || e.type === 'WatchEvent');
+                    relevantEvents = [...relevantEvents, ...otherEvents];
+                }
 
-                loadingElement.style.display = 'none';
+                // Slice to top 5
+                const displayEvents = relevantEvents.slice(0, 5);
 
-                if (recentCommits.length === 0) {
-                    listElement.innerHTML = '<li class="loading-text">No public commits recently.</li>';
+                if (displayEvents.length === 0) {
+                    statusMsg.innerText = "No recent public activity found.";
                     return;
                 }
 
-                recentCommits.forEach(event => {
+                // Clear loading message
+                listElement.innerHTML = '';
+
+                displayEvents.forEach(event => {
+                    let message = '';
+                    let iconClass = 'fa-code-commit';
+                    
+                    // Customize text/icon based on event type
+                    if (event.type === 'PushEvent') {
+                        // Get first commit message
+                        message = event.payload.commits && event.payload.commits[0] 
+                                  ? event.payload.commits[0].message 
+                                  : 'Pushed code updates';
+                        iconClass = 'fa-code-branch';
+                    } else if (event.type === 'CreateEvent') {
+                        message = 'Created new repository';
+                        iconClass = 'fa-plus';
+                    } else if (event.type === 'WatchEvent') {
+                        message = 'Starred a repository';
+                        iconClass = 'fa-star';
+                    } else {
+                        message = 'Public activity';
+                    }
+
                     const repoName = cleanRepoName(event.repo.name);
-                    // Get the first commit message in the payload
-                    const commitMsg = event.payload.commits[0] ? event.payload.commits[0].message : 'No message';
                     const timeString = timeAgo(event.created_at);
 
                     const li = document.createElement('li');
                     li.className = 'commit-item';
                     
                     li.innerHTML = `
-                        <i class="fa-solid fa-code-commit commit-icon"></i>
+                        <i class="fa-solid ${iconClass} commit-icon"></i>
                         <div class="commit-content">
                             <span class="repo-name">${repoName}</span>
-                            <span class="commit-msg" title="${commitMsg}">${commitMsg}</span>
+                            <span class="commit-msg" title="${message}">${message}</span>
                             <span class="commit-time">${timeString}</span>
                         </div>
                     `;
@@ -483,12 +506,11 @@
                 });
 
             } catch (error) {
-                console.error('Error:', error);
-                loadingElement.innerText = 'Could not load activity.';
+                console.error(error);
+                statusMsg.innerText = "Unable to load GitHub activity.";
             }
         }
 
-        // Initialize
         fetchGitHubActivity();
     </script>
 </body>
