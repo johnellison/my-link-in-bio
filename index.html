@@ -5,20 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>John Ellison | Founder & Investor</title>
     
-    <!-- Google Fonts: 'Outfit' for a modern, geometric, tech feel -->
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     
-    <!-- Font Awesome for Icons -->
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        /* --- CSS VARIABLES (Colors extracted from photo) --- */
+        /* --- CSS VARIABLES --- */
         :root {
-            --bg-dark: #0f1219; /* Deep dark background */
-            --primary-orange: #ff6b35; /* From Tunic */
-            --accent-blue: #2d8fd5; /* From background circle */
+            --bg-dark: #0f1219;
+            --primary-orange: #ff6b35;
+            --accent-blue: #2d8fd5;
             --glass-bg: rgba(255, 255, 255, 0.05);
             --glass-border: rgba(255, 255, 255, 0.1);
             --glass-hover: rgba(255, 255, 255, 0.1);
@@ -45,7 +45,7 @@
             position: relative;
         }
 
-        /* --- GEOMETRIC BACKGROUND ACCENTS --- */
+        /* --- BACKGROUND ACCENTS --- */
         .bg-glow {
             position: fixed;
             width: 600px;
@@ -56,22 +56,13 @@
             opacity: 0.4;
         }
         
-        .glow-1 {
-            background: var(--accent-blue);
-            top: -200px;
-            left: -200px;
-        }
-
-        .glow-2 {
-            background: var(--primary-orange);
-            bottom: -200px;
-            right: -200px;
-        }
+        .glow-1 { background: var(--accent-blue); top: -200px; left: -200px; }
+        .glow-2 { background: var(--primary-orange); bottom: -200px; right: -200px; }
 
         /* --- CONTAINER --- */
         .container {
             width: 100%;
-            max-width: 500px; /* Mobile optimal width */
+            max-width: 500px;
             padding: 40px 24px;
             display: flex;
             flex-direction: column;
@@ -79,7 +70,7 @@
             z-index: 1;
         }
 
-        /* --- PROFILE SECTION --- */
+        /* --- PROFILE --- */
         .profile-section {
             text-align: center;
             margin-bottom: 35px;
@@ -93,7 +84,6 @@
             margin: 0 auto 20px auto;
             border-radius: 50%;
             padding: 4px;
-            /* Gradient border using brand colors */
             background: linear-gradient(135deg, var(--accent-blue), var(--primary-orange));
         }
 
@@ -102,8 +92,8 @@
             height: 100%;
             object-fit: cover;
             border-radius: 50%;
-            border: 4px solid var(--bg-dark); /* Creates separation */
-            background-color: #333; /* Fallback color */
+            border: 4px solid var(--bg-dark);
+            background-color: #333;
         }
 
         .profile-name {
@@ -122,7 +112,7 @@
             font-weight: 300;
         }
 
-        /* --- LINKS SECTION --- */
+        /* --- LINKS --- */
         .links-container {
             width: 100%;
             display: flex;
@@ -147,7 +137,6 @@
             overflow: hidden;
         }
 
-        /* Hover Effects */
         .link-card:hover {
             background: var(--glass-hover);
             transform: translateY(-3px) scale(1.01);
@@ -155,7 +144,6 @@
             box-shadow: 0 10px 20px rgba(0,0,0,0.2);
         }
 
-        /* The little colored line on the left */
         .link-card::before {
             content: '';
             position: absolute;
@@ -167,9 +155,7 @@
             transition: width 0.3s ease;
         }
 
-        .link-card:hover::before {
-            width: 6px;
-        }
+        .link-card:hover::before { width: 6px; }
 
         .link-icon {
             font-size: 1.4rem;
@@ -180,7 +166,6 @@
             transition: color 0.3s ease;
         }
 
-        /* Specific icon colors on hover for pop */
         .link-card:hover .fa-x-twitter { color: #fff; }
         .link-card:hover .fa-instagram { color: #E1306C; }
         .link-card:hover .fa-linkedin { color: #0077b5; }
@@ -207,9 +192,118 @@
             color: var(--primary-orange);
         }
 
+        /* --- GITHUB ACTIVITY SECTION --- */
+        .section-title {
+            width: 100%;
+            margin: 30px 0 15px 0;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-sub);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-title i { color: var(--primary-orange); }
+
+        .activity-card {
+            width: 100%;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            margin-bottom: 20px;
+            animation: fadeInUp 0.8s ease-out 0.4s backwards;
+        }
+
+        /* Heatmap Pulse Container */
+        .heatmap-container {
+            width: 100%;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        /* SVG fixes for the heatmap image */
+        .heatmap-img {
+            width: 100%;
+            min-width: 300px;
+            filter: hue-rotate(0deg); /* Adjust if needed */
+        }
+
+        /* Commits List */
+        .commit-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .commit-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            font-size: 0.9rem;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .commit-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .commit-icon {
+            margin-top: 3px;
+            color: var(--accent-blue);
+            font-size: 0.8rem;
+        }
+
+        .commit-content {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            width: 100%;
+        }
+
+        .repo-name {
+            font-size: 0.75rem;
+            color: var(--text-sub);
+            font-weight: 400;
+        }
+
+        .commit-msg {
+            font-weight: 500;
+            color: var(--text-main);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 1; /* Limit to 1 line */
+            -webkit-box-orient: vertical;
+        }
+
+        .commit-time {
+            font-size: 0.7rem;
+            color: var(--primary-orange);
+            opacity: 0.8;
+            margin-top: 2px;
+        }
+
+        .loading-text {
+            color: var(--text-sub);
+            font-size: 0.9rem;
+            text-align: center;
+            padding: 10px;
+            font-style: italic;
+        }
+
         /* --- FOOTER --- */
         footer {
-            margin-top: 50px;
+            margin-top: 30px;
             font-size: 0.8rem;
             color: var(--text-sub);
             opacity: 0.6;
@@ -230,7 +324,6 @@
             to { opacity: 1; }
         }
 
-        /* --- MEDIA QUERIES --- */
         @media (max-width: 400px) {
             .profile-name { font-size: 1.3rem; }
             .link-card { padding: 15px 20px; }
@@ -239,7 +332,6 @@
 </head>
 <body>
 
-    <!-- Geometric Ambient Backgrounds -->
     <div class="bg-glow glow-1"></div>
     <div class="bg-glow glow-2"></div>
 
@@ -248,68 +340,156 @@
         <!-- Profile Section -->
         <div class="profile-section">
             <div class="img-container">
-                <!-- 
-                   REPLACE 'profile.jpg' with your actual image file path or URL. 
-                   If the image provided in the prompt is saved locally, name it 'profile.jpg'.
-                -->
-                <img src="refi-orbified-pfp.webp" alt="John Ellison" class="profile-img">
+                <!-- Ensure this file exists or change to URL -->
+                <img src="profile.jpg" alt="John Ellison" class="profile-img">
             </div>
             <h1 class="profile-name">John Ellison</h1>
-            <p class="profile-bio">Founder, angel investor and startup consultant teaching founders how to build with AI.</p>
+            <p class="profile-bio">Founder, angel investor and startup consultant building with AI.</p>
         </div>
 
         <!-- Links Section -->
         <div class="links-container">
-            
-            <!-- Website (Primary) -->
             <a href="https://john-ellison.com/" target="_blank" class="link-card">
                 <i class="fa-solid fa-globe link-icon"></i>
                 <span class="link-text">Personal Website</span>
                 <i class="fa-solid fa-chevron-right link-arrow"></i>
             </a>
 
-            <!-- Substack -->
             <a href="https://iamjohnellison.substack.com/" target="_blank" class="link-card">
                 <i class="fa-solid fa-newspaper link-icon"></i>
                 <span class="link-text">Substack Newsletter</span>
                 <i class="fa-solid fa-chevron-right link-arrow"></i>
             </a>
 
-            <!-- X / Twitter -->
             <a href="https://x.com/iamjohnellison" target="_blank" class="link-card">
-                <i class="fa-brands fa-twitter link-icon"></i>
+                <i class="fa-brands fa-x-twitter link-icon"></i>
                 <span class="link-text">X / Twitter</span>
                 <i class="fa-solid fa-chevron-right link-arrow"></i>
             </a>
 
-            <!-- LinkedIn -->
             <a href="https://www.linkedin.com/in/iamjohnellison" target="_blank" class="link-card">
                 <i class="fa-brands fa-linkedin link-icon"></i>
                 <span class="link-text">LinkedIn</span>
                 <i class="fa-solid fa-chevron-right link-arrow"></i>
             </a>
 
-            <!-- GitHub -->
             <a href="https://github.com/johnellison/" target="_blank" class="link-card">
                 <i class="fa-brands fa-github link-icon"></i>
                 <span class="link-text">GitHub</span>
                 <i class="fa-solid fa-chevron-right link-arrow"></i>
             </a>
 
-            <!-- Instagram -->
             <a href="https://www.instagram.com/iamjohnellison" target="_blank" class="link-card">
                 <i class="fa-brands fa-instagram link-icon"></i>
                 <span class="link-text">Instagram</span>
                 <i class="fa-solid fa-chevron-right link-arrow"></i>
             </a>
-
         </div>
 
-        <!-- Footer -->
+        <!-- Recent Activity Section -->
+        <div class="section-title">
+            <i class="fa-solid fa-chart-line"></i> Recent Activity
+        </div>
+
+        <div class="activity-card">
+            <!-- Heatmap Pulse -->
+            <div class="heatmap-container">
+                <!-- Using ghchart.rshah.org to generate graph in brand color (#ff6b35) -->
+                <img src="https://ghchart.rshah.org/ff6b35/johnellison" alt="Github Heatmap" class="heatmap-img">
+            </div>
+
+            <!-- Commits List -->
+            <div id="loading" class="loading-text">Loading commits...</div>
+            <ul class="commit-list" id="commit-list">
+                <!-- JS will inject items here -->
+            </ul>
+        </div>
+
         <footer>
             © 2025 John Ellison
         </footer>
     </div>
 
+    <!-- JAVASCRIPT FOR GITHUB API -->
+    <script>
+        const username = 'johnellison';
+        const apiUrl = `https://api.github.com/users/${username}/events/public`;
+        const listElement = document.getElementById('commit-list');
+        const loadingElement = document.getElementById('loading');
+
+        // Helper: Time Ago calculation
+        function timeAgo(dateParam) {
+            if (!dateParam) return null;
+            const date = typeof dateParam === 'object' ? dateParam : new Date(dateParam);
+            const today = new Date();
+            const seconds = Math.round((today - date) / 1000);
+            const minutes = Math.round(seconds / 60);
+            const hours = Math.round(minutes / 60);
+            const days = Math.round(hours / 24);
+
+            if (seconds < 5) return 'just now';
+            if (seconds < 60) return `${seconds} seconds ago`;
+            if (seconds < 90) return 'a minute ago';
+            if (minutes < 60) return `${minutes} minutes ago`;
+            if (minutes < 90) return 'an hour ago';
+            if (hours < 24) return `${hours} hours ago`;
+            if (hours < 48) return 'yesterday';
+            return `${days} days ago`;
+        }
+
+        // Helper: Clean Repo Name
+        function cleanRepoName(name) {
+            return name.replace(`${username}/`, '');
+        }
+
+        async function fetchGitHubActivity() {
+            try {
+                const response = await fetch(apiUrl);
+                if (!response.ok) throw new Error('Failed to fetch');
+                
+                const events = await response.json();
+                
+                // Filter for PushEvents only
+                const pushEvents = events.filter(event => event.type === 'PushEvent');
+                
+                // Take only the top 5
+                const recentCommits = pushEvents.slice(0, 5);
+
+                loadingElement.style.display = 'none';
+
+                if (recentCommits.length === 0) {
+                    listElement.innerHTML = '<li class="loading-text">No public commits recently.</li>';
+                    return;
+                }
+
+                recentCommits.forEach(event => {
+                    const repoName = cleanRepoName(event.repo.name);
+                    // Get the first commit message in the payload
+                    const commitMsg = event.payload.commits[0] ? event.payload.commits[0].message : 'No message';
+                    const timeString = timeAgo(event.created_at);
+
+                    const li = document.createElement('li');
+                    li.className = 'commit-item';
+                    
+                    li.innerHTML = `
+                        <i class="fa-solid fa-code-commit commit-icon"></i>
+                        <div class="commit-content">
+                            <span class="repo-name">${repoName}</span>
+                            <span class="commit-msg" title="${commitMsg}">${commitMsg}</span>
+                            <span class="commit-time">${timeString}</span>
+                        </div>
+                    `;
+                    listElement.appendChild(li);
+                });
+
+            } catch (error) {
+                console.error('Error:', error);
+                loadingElement.innerText = 'Could not load activity.';
+            }
+        }
+
+        // Initialize
+        fetchGitHubActivity();
+    </script>
 </body>
 </html>
