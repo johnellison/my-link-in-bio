@@ -959,6 +959,147 @@
             background-clip: text;
         }
 
+        /* --- EMAIL SIGNUP FORM --- */
+        .email-signup-section {
+            width: 100%;
+            margin: 35px 0 0 0;
+        }
+
+        .email-signup-form {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            width: 100%;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 6px;
+            backdrop-filter: blur(10px);
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            overflow: visible;
+        }
+
+        /* Subtle prismatic border */
+        .email-signup-form::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: conic-gradient(
+                from 135deg,
+                rgba(255, 150, 170, 0.4) 0deg,
+                rgba(255, 200, 120, 0.35) 72deg,
+                rgba(110, 255, 180, 0.3) 144deg,
+                rgba(110, 181, 255, 0.35) 216deg,
+                rgba(180, 157, 255, 0.4) 288deg,
+                rgba(255, 150, 170, 0.4) 360deg
+            );
+            border-radius: inherit;
+            z-index: -2;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .email-signup-form::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--bg-dark);
+            border-radius: inherit;
+            z-index: -1;
+        }
+
+        .email-signup-form:focus-within {
+            background: var(--glass-hover);
+            border-color: transparent;
+            box-shadow: 0 12px 28px rgba(180, 100, 255, 0.15);
+        }
+
+        .email-signup-form:focus-within::before {
+            opacity: 1;
+        }
+
+        .email-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.95rem;
+            padding: 16px 20px;
+            outline: none;
+        }
+
+        .email-input::placeholder {
+            color: var(--text-sub);
+            opacity: 0.6;
+        }
+
+        .email-submit-btn {
+            background: linear-gradient(135deg, var(--primary-pink), var(--accent-purple));
+            border: none;
+            color: white;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 16px 32px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+            letter-spacing: 0.5px;
+        }
+
+        .email-submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(180, 100, 255, 0.4);
+        }
+
+        .email-submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .email-submit-btn i {
+            font-size: 1rem;
+        }
+
+        .form-message {
+            margin-top: 12px;
+            font-size: 0.85rem;
+            text-align: center;
+            padding: 10px;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .form-message.success {
+            color: #6eff6e;
+            background: rgba(110, 255, 110, 0.1);
+            border: 1px solid rgba(110, 255, 110, 0.2);
+        }
+
+        .form-message.error {
+            color: #ff6e6e;
+            background: rgba(255, 110, 110, 0.1);
+            border: 1px solid rgba(255, 110, 110, 0.2);
+        }
+
+        @media (max-width: 480px) {
+            .email-submit-btn {
+                padding: 16px 24px;
+                font-size: 0.85rem;
+            }
+        }
+
         /* --- FOOTER --- */
         footer {
             margin-top: 30px;
@@ -1052,6 +1193,26 @@
                 <span class="link-text">Instagram</span>
                 <i class="fa-solid fa-chevron-right link-arrow"></i>
             </a>
+            </div>
+
+            <!-- Email Signup Form -->
+            <div class="email-signup-section">
+                <form id="email-signup-form" class="email-signup-form" action="https://formspree.io/p/2897202674636160303/f/email-signup" method="POST">
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        class="email-input"
+                        placeholder="Enter your email"
+                        required
+                        autocomplete="email"
+                    >
+                    <button type="submit" class="email-submit-btn">
+                        <i class="fa-solid fa-envelope"></i>
+                        Join
+                    </button>
+                </form>
+                <div id="form-message" class="form-message"></div>
             </div>
         </div>
 
@@ -1472,6 +1633,61 @@
         }
 
         fetchYouTubeVideos();
+
+        // ===== EMAIL SIGNUP FORM: Formspree Integration =====
+        const emailForm = document.getElementById('email-signup-form');
+        const formMessage = document.getElementById('form-message');
+
+        async function handleEmailSubmit(event) {
+            event.preventDefault();
+
+            const submitBtn = emailForm.querySelector('.email-submit-btn');
+            const originalBtnText = submitBtn.innerHTML;
+            const data = new FormData(event.target);
+
+            // Show loading state
+            submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Joining...';
+            submitBtn.disabled = true;
+            formMessage.style.display = 'none';
+
+            fetch(event.target.action, {
+                method: emailForm.method,
+                body: data,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            }).then(response => {
+                if (response.ok) {
+                    // Success
+                    formMessage.textContent = 'Thanks for signing up! Check your inbox to confirm.';
+                    formMessage.className = 'form-message success';
+                    formMessage.style.display = 'block';
+                    emailForm.reset();
+                } else {
+                    // Handle errors from Formspree
+                    response.json().then(data => {
+                        if (Object.hasOwn(data, 'errors')) {
+                            formMessage.textContent = data["errors"].map(error => error["message"]).join(", ");
+                        } else {
+                            formMessage.textContent = "Oops! There was a problem submitting your form";
+                        }
+                        formMessage.className = 'form-message error';
+                        formMessage.style.display = 'block';
+                    });
+                }
+            }).catch(error => {
+                console.error('Form submission error:', error);
+                formMessage.textContent = "Oops! There was a problem submitting your form";
+                formMessage.className = 'form-message error';
+                formMessage.style.display = 'block';
+            }).finally(() => {
+                // Reset button
+                submitBtn.innerHTML = originalBtnText;
+                submitBtn.disabled = false;
+            });
+        }
+
+        emailForm.addEventListener('submit', handleEmailSubmit);
     </script>
 </body>
 </html>
