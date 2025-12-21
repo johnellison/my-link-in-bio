@@ -995,11 +995,9 @@
         }
 
         .email-submit-btn {
-            background: linear-gradient(135deg,
-                rgba(180, 157, 255, 0.9),
-                rgba(110, 181, 255, 0.85)
-            );
-            border: none;
+            position: relative;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.15);
             color: white;
             font-family: 'Outfit', sans-serif;
             font-size: 0.9rem;
@@ -1007,28 +1005,71 @@
             padding: 15px 28px;
             border-radius: 12px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.4s ease;
             display: flex;
             align-items: center;
             gap: 8px;
             white-space: nowrap;
             letter-spacing: 0.3px;
+            overflow: hidden;
+        }
+
+        /* Prismatic rainbow border */
+        .email-submit-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            padding: 2px;
+            background: linear-gradient(
+                135deg,
+                rgba(255, 150, 170, 0.8),
+                rgba(255, 200, 120, 0.8),
+                rgba(110, 255, 180, 0.7),
+                rgba(110, 181, 255, 0.8),
+                rgba(180, 157, 255, 0.8),
+                rgba(255, 150, 170, 0.8)
+            );
+            border-radius: inherit;
+            -webkit-mask:
+                linear-gradient(#fff 0 0) content-box,
+                linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        /* Inner background */
+        .email-submit-btn::after {
+            content: '';
+            position: absolute;
+            inset: 2px;
+            background: rgba(10, 8, 20, 0.95);
+            border-radius: 10px;
+            z-index: -1;
+            transition: background 0.3s ease;
         }
 
         .email-submit-btn:hover {
-            background: linear-gradient(135deg,
-                rgba(180, 157, 255, 1),
-                rgba(110, 181, 255, 0.95)
-            );
-            transform: translateY(-1px);
+            border-color: transparent;
+            transform: translateY(-2px);
+            box-shadow:
+                0 10px 40px rgba(180, 100, 255, 0.25),
+                0 0 60px rgba(110, 181, 255, 0.15);
+        }
+
+        .email-submit-btn:hover::before {
+            opacity: 1;
         }
 
         .email-submit-btn:active {
-            transform: translateY(0);
+            transform: translateY(-1px);
         }
 
         .email-submit-btn i {
             font-size: 1rem;
+            position: relative;
+            z-index: 1;
         }
 
         .form-message {
@@ -1178,7 +1219,7 @@
                     </button>
                 </form>
                 <div id="form-message" class="form-message"></div>
-                <div class="form-caption">Subscribe for updates, no spam.</div>
+                <div class="form-caption">Subscribe for updates on building with AI, regenerative leadership &amp; more..</div>
             </div>
         </div>
 
