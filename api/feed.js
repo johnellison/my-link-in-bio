@@ -12,7 +12,7 @@ const SOURCES = {
   youtubeChannelId: 'UCu9vXNUlLwb4Iw4CuG7aHtQ',
   writings: [
     { name: 'Substack', feed: 'https://iamjohnellison.substack.com/feed' },
-    { name: 'Regenera', feed: 'https://regenera.substack.com/feed' },
+    { name: 'Regenera', feed: 'https://iamregenera.substack.com/feed' },
   ],
   github: { user: 'johnellison', orgs: ['aiosbrain'] },
 };

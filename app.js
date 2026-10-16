@@ -8,7 +8,7 @@ const URLS = {
     github: 'https://github.com/johnellison',
     youtube: 'https://www.youtube.com/@iamjohnellison',
     substack: 'https://iamjohnellison.substack.com/',
-    regenera: 'https://regenera.substack.com/',
+    regenera: 'https://iamregenera.substack.com/',
 };
 const PAGE = 6; // items revealed per "See more"
 
